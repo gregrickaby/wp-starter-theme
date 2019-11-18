@@ -65,6 +65,29 @@ if ( ! function_exists( '_s_setup' ) ) :
 			'default-image' => '',
 		) ) );
 
+		add_theme_support( 'editor-color-palette', array(
+			array(
+				'name'  => esc_html__( 'strong magenta', '_s' ),
+				'slug'  => 'strong-magenta',
+				'color' => '#a156b4',
+			),
+			array(
+				'name'  => esc_html__( 'light grayish magenta', '_s' ),
+				'slug' => 'light-grayish-magenta',
+				'color' => '#d0a5db',
+			),
+			array(
+				'name'  => esc_html__( 'very light gray', '_s' ),
+				'slug'  => 'very-light-gray',
+				'color' => '#eee',
+			),
+			array(
+				'name'  => esc_html__( 'very dark gray', '_s' ),
+				'slug'  => 'very-dark-gray',
+				'color' => '#444',
+			),
+		) );
+
 		// Add theme support for selective refresh for widgets.
 		add_theme_support( 'customize-selective-refresh-widgets' );
 

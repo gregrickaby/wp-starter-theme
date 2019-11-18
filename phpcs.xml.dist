@@ -1,90 +1,76 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Example Project" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="WP Starter Theme Standards" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
 
-	<description>A custom set of rules to check for a WPized WordPress project</description>
+	<!-- See https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
+	<!-- See https://github.com/WordPress/WordPress-Coding-Standards/blob/develop/.phpcs.xml.dist -->
 
-	<!-- Exclude WP Core folders and files from being checked. -->
-	<exclude-pattern>/docroot/wp-admin/*</exclude-pattern>
-	<exclude-pattern>/docroot/wp-includes/*</exclude-pattern>
-	<exclude-pattern>/docroot/wp-*.php</exclude-pattern>
-	<exclude-pattern>/docroot/index.php</exclude-pattern>
-	<exclude-pattern>/docroot/xmlrpc.php</exclude-pattern>
-	<exclude-pattern>/docroot/wp-content/plugins/*</exclude-pattern>
+	<!-- Set a description for this ruleset. -->
+	<description>Coding standards used for checking the WP Starter Theme.</description>
 
-	<!-- Exclude the Composer Vendor directory. -->
+	<!-- Check the entire theme. -->
+	<file>.</file>
+
+	<!-- Exclude patterns. -->
 	<exclude-pattern>/vendor/*</exclude-pattern>
-
-	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>/node_modules/*</exclude-pattern>
 
-	<!-- Exclude minified Javascript files. -->
-	<exclude-pattern>*.min.js</exclude-pattern>
+	<!-- Additional arguments. -->
+	<arg value="sp"/>
+	<arg name="basepath" value="."/>
+	<arg name="parallel" value="8"/>
+	<arg name="cache"/>
+	<arg name="extensions" value="php"/>
 
-	<!-- Include the WordPress-Extra standard. -->
-	<rule ref="WordPress-Extra">
-		<!--
-		We may want a middle ground though. The best way to do this is add the
-		entire ruleset, then rule by rule, remove ones that don't suit a project.
-		We can do this by running `phpcs` with the '-s' flag, which allows us to
-		see the names of the sniffs reporting errors.
-		Once we know the sniff names, we can opt to exclude sniffs which don't
-		suit our project like so.
+	<!-- Include the WordPress rulesets. -->
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="WPThemeReview"/>
 
-		The below two examples just show how you can exclude rules.
-		They are not intended as advice about which sniffs to exclude.
-		-->
-
-		<!--
-		<exclude name="WordPress.WhiteSpace.ControlStructureSpacing"/>
-		<exclude name="WordPress.Security.EscapeOutput"/>
-		-->
+	<!-- We want to allow exceptions for the filename naming, since we are working with a theme. -->
+	<!-- See https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#themes-allow-filename-exceptions -->
+	<rule ref="WordPress.Files.FileName">
+		<properties>
+			<property name="is_theme" value="true"/>
+		</properties>
 	</rule>
 
-	<!-- Let's also check that everything is properly documented. -->
-	<rule ref="WordPress-Docs"/>
+	<!-- Allow multiple parameters on one line for multi-line function calls. -->
+	<rule ref="PEAR.Functions.FunctionCallSignature">
+		<properties>
+			 <property name="allowMultipleArguments" value="true" />
+		</properties>
+	</rule>
 
-	<!-- Add in some extra rules from other standards. -->
-	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
-	<rule ref="Generic.Commenting.Todo"/>
+	<!-- Improve code readablilty by allowing the artguments after function call. -->
+	<rule ref="PEAR.Functions.FunctionCallSignature">
+		<exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+	</rule>
 
-	<!-- Check for PHP cross-version compatibility. -->
-	<!--
-	To enable this, the PHPCompatibilityWP standard needs
-	to be installed.
-	See the readme for installation instructions:
-	https://github.com/PHPCompatibility/PHPCompatibilityWP
-	For more information, also see:
-	https://github.com/PHPCompatibility/PHPCompatibility
-	-->
-	<!--
-	<config name="testVersion" value="5.2-"/>
-	<rule ref="PHPCompatibilityWP"/>
-	-->
-
-	<!--
-	To get the optimal benefits of using WPCS, we should add a couple of
-	custom properties.
-	Adjust the values of these properties to fit our needs.
-
-	For information on additional custom properties available, check out
-	the wiki:
-	https://github.com/WordPress/WordPress-Coding-Standards/wiki/Customizable-sniff-properties
-	-->
-	<config name="minimum_supported_wp_version" value="4.9"/>
-
+	<!-- Check valid textdomain. -->
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="my-textdomain"/>
-				<element value="library-textdomain"/>
+				<element value="twentytwenty"/>
 			</property>
 		</properties>
 	</rule>
 
-	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+	<rule ref="WordPress-Extra">
+		<!-- _e() and _ex() are considered safe for core translations. -->
+		<exclude name="WordPress.Security.EscapeOutput.UnsafePrintingFunction"/>
+	</rule>
+
+	<rule ref="WordPress.Security.EscapeOutput">
 		<properties>
-			<property name="prefixes" type="array">
-				<element value="my_prefix"/>
+			<property name="customAutoEscapedFunctions" type="array">
+				<!-- i18n functions are considered safe for core translations. -->
+				<element value="__"/>
+				<element value="_x"/>
+				<element value="_n"/>
+				<element value="_nx"/>
+				<element value="number_format_i18n"/>
+				<element value="date_i18n"/>
 			</property>
 		</properties>
 	</rule>
