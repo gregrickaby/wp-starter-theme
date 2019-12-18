@@ -23,7 +23,7 @@
   "main": "src/js/app.js",
   "dependencies": {},
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^3.1.0",
+    "@wordpress/eslint-plugin": "^3.2.0",
     "autoprefixer": "^9.6.5",
     "browser-sync": "^2.26.7",
     "cssnano": "^4.1.10",
